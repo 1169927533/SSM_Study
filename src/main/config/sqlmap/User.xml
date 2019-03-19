@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace命名空间，作用是对sql进行分类化管理，理解sql隔离
+注意：使用mapper代理方法开发，namespace有特殊重要的作用
+-->
+<mapper namespace="zjc">
+    <!--在映射文件里面配置sql语句-->
+    <!--
+    id标识映射文件中的sql，标识为statement的id
+    将sql语句分装到mappedStatement的对象中
+    #{}标识一个占位符
+    parameterType指定输入参数的类型
+    resultType指定sql输出结果所映射的单条java对象类型 只能是单条
+    #{id}:中的id标识接受输入的参数，参数的名称是id
+    -->
+    <select id="findUserById" parameterType="Integer" resultType="User">
+        select * from user where id = #{id}
+    </select>
+    <!--模糊查询-->
+    <select id="findUserByName" parameterType="String" resultType="User">
+        select * from user where username like '%${value}%'
+    </select>
+    <!--添加用户-->
+    <insert id="insertUser" parameterType="User">
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            select last_insert_id()
+        </selectKey>
+        insert into user(id,username,birthday,sex,address) value (#{id},#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <!--删除用户-->
+    <delete id="deletUser" parameterType="Integer">
+      delete from user where id = #{id}
+    </delete>
+    <!--更新用户-->
+    <update id="updateUser" parameterType="User">
+        update user set  username = #{username},birthday = #{birthday},sex=#{sex},address = #{address} where id = #{id}
+    </update>
+</mapper>
+
